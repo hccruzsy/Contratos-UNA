@@ -57,7 +57,7 @@
         }
     </style>
     <script>
-        // Función para inicializar usuarios almacenados
+        // Función para inicializar usuarios
         function inicializarUsuarios() {
             if (!localStorage.getItem('usuarios')) {
                 const usuariosIniciales = [{ usuario: 'admin', clave: '1234' }];
@@ -65,45 +65,7 @@
             }
         }
 
-        // Función para agregar un nuevo usuario
-        function agregarUsuario() {
-            const nuevoUsuario = document.getElementById('nuevo-usuario').value;
-            const nuevaClave = document.getElementById('nueva-clave').value;
-            const mensajeError = document.getElementById('mensaje-error');
-            const mensajeExito = document.getElementById('mensaje-exito');
-
-            // Validar campos
-            if (!nuevoUsuario || !nuevaClave) {
-                mensajeError.textContent = 'Por favor, completa todos los campos.';
-                mensajeExito.textContent = '';
-                return;
-            }
-
-            // Obtener usuarios actuales
-            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
-
-            // Verificar si el usuario ya existe
-            if (usuarios.some(u => u.usuario === nuevoUsuario)) {
-                mensajeError.textContent = 'El usuario ya existe.';
-                mensajeExito.textContent = '';
-                return;
-            }
-
-            // Agregar nuevo usuario
-            usuarios.push({ usuario: nuevoUsuario, clave: nuevaClave });
-            localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-            // Limpiar campos y mensajes
-            document.getElementById('nuevo-usuario').value = '';
-            document.getElementById('nueva-clave').value = '';
-            mensajeError.textContent = '';
-            mensajeExito.textContent = 'Usuario agregado exitosamente.';
-
-            // Actualizar la lista de usuarios
-            mostrarUsuarios();
-        }
-
-        // Función para mostrar la lista de usuarios
+        // Función para mostrar usuarios
         function mostrarUsuarios() {
             const usuarios = JSON.parse(localStorage.getItem('usuarios'));
             const listaUsuarios = document.getElementById('lista-usuarios');
@@ -117,7 +79,70 @@
             });
         }
 
-        // Inicialización al cargar la página
+        // Función para agregar un usuario nuevo
+        function agregarUsuario() {
+            const nuevoUsuario = document.getElementById('nuevo-usuario').value;
+            const nuevaClave = document.getElementById('nueva-clave').value;
+            const mensajeError = document.getElementById('mensaje-error');
+            const mensajeExito = document.getElementById('mensaje-exito');
+
+            if (!nuevoUsuario || !nuevaClave) {
+                mensajeError.textContent = 'Por favor, completa todos los campos.';
+                mensajeExito.textContent = '';
+                return;
+            }
+
+            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+
+            if (usuarios.some(u => u.usuario === nuevoUsuario)) {
+                mensajeError.textContent = 'El usuario ya existe.';
+                mensajeExito.textContent = '';
+                return;
+            }
+
+            usuarios.push({ usuario: nuevoUsuario, clave: nuevaClave });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            document.getElementById('nuevo-usuario').value = '';
+            document.getElementById('nueva-clave').value = '';
+            mensajeError.textContent = '';
+            mensajeExito.textContent = 'Usuario agregado exitosamente.';
+
+            mostrarUsuarios();
+        }
+
+        // Función para cambiar la contraseña de un usuario existente
+        function cambiarClave() {
+            const usuario = document.getElementById('usuario-cambiar').value;
+            const nuevaClave = document.getElementById('clave-cambiar').value;
+            const mensajeErrorClave = document.getElementById('mensaje-error-clave');
+            const mensajeExitoClave = document.getElementById('mensaje-exito-clave');
+
+            if (!usuario || !nuevaClave) {
+                mensajeErrorClave.textContent = 'Por favor, completa todos los campos.';
+                mensajeExitoClave.textContent = '';
+                return;
+            }
+
+            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+            const indiceUsuario = usuarios.findIndex(u => u.usuario === usuario);
+
+            if (indiceUsuario === -1) {
+                mensajeErrorClave.textContent = 'El usuario no existe.';
+                mensajeExitoClave.textContent = '';
+                return;
+            }
+
+            usuarios[indiceUsuario].clave = nuevaClave;
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            document.getElementById('usuario-cambiar').value = '';
+            document.getElementById('clave-cambiar').value = '';
+            mensajeErrorClave.textContent = '';
+            mensajeExitoClave.textContent = 'Contraseña actualizada exitosamente.';
+        }
+
+        // Inicializar al cargar la página
         window.onload = function () {
             inicializarUsuarios();
             mostrarUsuarios();
@@ -130,6 +155,8 @@
     </header>
     <main>
         <h2>Gestión de Usuarios</h2>
+
+        <!-- Formulario para agregar nuevo usuario -->
         <div class="form-container">
             <h3>Agregar Nuevo Usuario</h3>
             <input type="text" id="nuevo-usuario" placeholder="Nombre de usuario" required>
@@ -138,6 +165,18 @@
             <p id="mensaje-error" style="color: red;"></p>
             <p id="mensaje-exito" style="color: green;"></p>
         </div>
+
+        <!-- Formulario para cambiar contraseña -->
+        <div class="form-container">
+            <h3>Cambiar Contraseña</h3>
+            <input type="text" id="usuario-cambiar" placeholder="Usuario existente" required>
+            <input type="password" id="clave-cambiar" placeholder="Nueva contraseña" required>
+            <button onclick="cambiarClave()">Cambiar Contraseña</button>
+            <p id="mensaje-error-clave" style="color: red;"></p>
+            <p id="mensaje-exito-clave" style="color: green;"></p>
+        </div>
+
+        <!-- Lista de usuarios actuales -->
         <div class="user-list">
             <h3>Usuarios Actuales</h3>
             <div id="lista-usuarios"></div>
