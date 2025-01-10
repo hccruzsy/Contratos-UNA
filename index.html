@@ -3,76 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de Sesión</title>
+    <title>Página de Inicio de Sesión</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            background-color: #f4f4f4;
         }
         .login-container {
+            width: 100%;
+            max-width: 400px;
             background-color: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
-            width: 300px;
         }
         h1 {
             margin-bottom: 20px;
-            font-size: 1.5em;
             color: #333;
         }
         input {
-            width: 100%;
-            padding: 10px;
+            width: calc(100% - 20px);
             margin: 10px 0;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 1em;
         }
         button {
-            width: 100%;
+            width: calc(100% - 20px);
             padding: 10px;
+            margin-top: 10px;
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
+            font-size: 1em;
             cursor: pointer;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .error {
+        #mensaje-error {
             color: red;
-            font-size: 0.9em;
             margin-top: 10px;
         }
     </style>
     <script>
+        // Validar credenciales de inicio de sesión
         function validarCredenciales() {
-            // Credenciales correctas
-            const usuarioValido = "admin";
-            const claveValida = "1234";
-
-            // Obtener valores ingresados por el usuario
-            const usuario = document.getElementById("usuario").value;
-            const clave = document.getElementById("clave").value;
+            const usuario = document.getElementById("usuario").value.trim();
+            const clave = document.getElementById("clave").value.trim();
             const mensajeError = document.getElementById("mensaje-error");
 
-            // Validar credenciales
-            if (usuario === usuarioValido && clave === claveValida) {
-                // Redirigir a la página de trabajo
+            // Obtener los usuarios desde localStorage
+            const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+            // Buscar un usuario que coincida con las credenciales
+            const usuarioValido = usuarios.find(u => u.usuario === usuario && u.clave === clave);
+
+            if (usuarioValido) {
+                // Redirigir a trabajo.html si las credenciales son correctas
                 window.location.href = "trabajo.html";
             } else {
-                // Mostrar mensaje de error
+                // Mostrar un mensaje de error si las credenciales son incorrectas
                 mensajeError.textContent = "Usuario o contraseña incorrectos.";
             }
         }
+
+        // Inicializar el almacenamiento con un usuario por defecto si está vacío
+        window.onload = function () {
+            if (!localStorage.getItem('usuarios')) {
+                const usuariosIniciales = [{ usuario: 'admin', clave: '1234' }];
+                localStorage.setItem('usuarios', JSON.stringify(usuariosIniciales));
+            }
+        };
     </script>
 </head>
 <body>
@@ -81,7 +92,7 @@
         <input type="text" id="usuario" placeholder="Usuario" required>
         <input type="password" id="clave" placeholder="Contraseña" required>
         <button onclick="validarCredenciales()">Ingresar</button>
-        <p id="mensaje-error" class="error"></p>
+        <p id="mensaje-error"></p>
     </div>
 </body>
 </html>
