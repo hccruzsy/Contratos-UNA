@@ -20,14 +20,128 @@
         main {
             margin: 20px;
         }
+        .form-container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+        input, button {
+            width: calc(100% - 20px);
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+            font-size: 1em;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .user-list {
+            margin-top: 20px;
+        }
+        .user-item {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
     </style>
+    <script>
+        // Función para inicializar usuarios almacenados
+        function inicializarUsuarios() {
+            if (!localStorage.getItem('usuarios')) {
+                const usuariosIniciales = [{ usuario: 'admin', clave: '1234' }];
+                localStorage.setItem('usuarios', JSON.stringify(usuariosIniciales));
+            }
+        }
+
+        // Función para agregar un nuevo usuario
+        function agregarUsuario() {
+            const nuevoUsuario = document.getElementById('nuevo-usuario').value;
+            const nuevaClave = document.getElementById('nueva-clave').value;
+            const mensajeError = document.getElementById('mensaje-error');
+            const mensajeExito = document.getElementById('mensaje-exito');
+
+            // Validar campos
+            if (!nuevoUsuario || !nuevaClave) {
+                mensajeError.textContent = 'Por favor, completa todos los campos.';
+                mensajeExito.textContent = '';
+                return;
+            }
+
+            // Obtener usuarios actuales
+            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+
+            // Verificar si el usuario ya existe
+            if (usuarios.some(u => u.usuario === nuevoUsuario)) {
+                mensajeError.textContent = 'El usuario ya existe.';
+                mensajeExito.textContent = '';
+                return;
+            }
+
+            // Agregar nuevo usuario
+            usuarios.push({ usuario: nuevoUsuario, clave: nuevaClave });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            // Limpiar campos y mensajes
+            document.getElementById('nuevo-usuario').value = '';
+            document.getElementById('nueva-clave').value = '';
+            mensajeError.textContent = '';
+            mensajeExito.textContent = 'Usuario agregado exitosamente.';
+
+            // Actualizar la lista de usuarios
+            mostrarUsuarios();
+        }
+
+        // Función para mostrar la lista de usuarios
+        function mostrarUsuarios() {
+            const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+            const listaUsuarios = document.getElementById('lista-usuarios');
+            listaUsuarios.innerHTML = ''; // Limpiar lista actual
+
+            usuarios.forEach(usuario => {
+                const divUsuario = document.createElement('div');
+                divUsuario.className = 'user-item';
+                divUsuario.textContent = `Usuario: ${usuario.usuario}`;
+                listaUsuarios.appendChild(divUsuario);
+            });
+        }
+
+        // Inicialización al cargar la página
+        window.onload = function () {
+            inicializarUsuarios();
+            mostrarUsuarios();
+        };
+    </script>
 </head>
 <body>
     <header>
         <h1>Página de Trabajo</h1>
     </header>
     <main>
-        <p>Bienvenido a la página de trabajo. Puedes personalizar este contenido.</p>
+        <h2>Gestión de Usuarios</h2>
+        <div class="form-container">
+            <h3>Agregar Nuevo Usuario</h3>
+            <input type="text" id="nuevo-usuario" placeholder="Nombre de usuario" required>
+            <input type="password" id="nueva-clave" placeholder="Contraseña" required>
+            <button onclick="agregarUsuario()">Agregar Usuario</button>
+            <p id="mensaje-error" style="color: red;"></p>
+            <p id="mensaje-exito" style="color: green;"></p>
+        </div>
+        <div class="user-list">
+            <h3>Usuarios Actuales</h3>
+            <div id="lista-usuarios"></div>
+        </div>
     </main>
 </body>
 </html>
