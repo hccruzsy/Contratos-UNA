@@ -3,45 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Principal</title>
+    <title>Inicio de Sesión</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            text-align: center;
             background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        header {
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
             background-color: #007BFF;
             color: white;
-            padding: 20px;
-        }
-        main {
-            margin: 20px;
-        }
-        a {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 10px 20px;
-            color: white;
-            background-color: #28a745;
-            text-decoration: none;
+            border: none;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
-        a:hover {
-            background-color: #218838;
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
         }
     </style>
+    <script>
+        function validarCredenciales() {
+            // Credenciales correctas
+            const usuarioValido = "admin";
+            const claveValida = "1234";
+
+            // Obtener valores ingresados por el usuario
+            const usuario = document.getElementById("usuario").value;
+            const clave = document.getElementById("clave").value;
+            const mensajeError = document.getElementById("mensaje-error");
+
+            // Validar credenciales
+            if (usuario === usuarioValido && clave === claveValida) {
+                // Redirigir a la página de trabajo
+                window.location.href = "trabajo.html";
+            } else {
+                // Mostrar mensaje de error
+                mensajeError.textContent = "Usuario o contraseña incorrectos.";
+            }
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a mi sitio web</h1>
-    </header>
-    <main>
-        <p>Haz clic en el enlace de abajo para ir a la página de trabajo.</p>
-        <a href="trabajo.html">Ir a la página de Trabajo</a>
-    </main>
+    <div class="login-container">
+        <h1>Inicio de Sesión</h1>
+        <input type="text" id="usuario" placeholder="Usuario" required>
+        <input type="password" id="clave" placeholder="Contraseña" required>
+        <button onclick="validarCredenciales()">Ingresar</button>
+        <p id="mensaje-error" class="error"></p>
+    </div>
 </body>
 </html>
