@@ -132,24 +132,62 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Compra de equipo</td>
-                    <td>En proceso</td>
-                    <td>23/01/2025</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Adquisición de software</td>
-                    <td>Indeterminada</td>
-                    <td>15/01/2025</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Mantenimiento de infraestructura</td>
-                    <td>Terminada</td>
-                    <td>10/01/2025</td>
-                </tr>
+                <div class="table-container">
+                    <h2>Registros Guardados</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Fecha Asignación</th>
+                                <th>Consecutivo</th>
+                                <th>Agrupación</th>
+                                <th>Objeto</th>
+                                <th>Analista</th>
+                                <th>SICOP</th>
+                                <th>Monto</th>
+                                <th>Lotes</th>
+                                <th>Prioridad</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrosTabla"></tbody>
+                    </table>
+                </div>
+                <script>
+                    document.getElementById('contratacionesForm').addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        const datos = new FormData(event.target);
+                        const contratacion = {};
+                        datos.forEach((value, key) => contratacion[key] = value);
+            
+                        const listaContrataciones = JSON.parse(localStorage.getItem('contrataciones')) || [];
+                        listaContrataciones.push(contratacion);
+                        localStorage.setItem('contrataciones', JSON.stringify(listaContrataciones));
+            
+                        alert('Datos guardados con éxito');
+                        event.target.reset();
+                        cargarRegistros();
+                    });
+            
+                    function cargarRegistros() {
+                        const registros = JSON.parse(localStorage.getItem('contrataciones')) || [];
+                        const tabla = document.getElementById('registrosTabla');
+                        tabla.innerHTML = '';
+                        registros.forEach(contratacion => {
+                            const fila = document.createElement('tr');
+                            for (let key in contratacion) {
+                                const celda = document.createElement('td');
+                                celda.textContent = contratacion[key];
+                                fila.appendChild(celda);
+                            }
+                            tabla.appendChild(fila);
+                        });
+                    }
+            
+                    // Cargar registros al inicio
+                    document.addEventListener('DOMContentLoaded', cargarRegistros);
+                </script>
+            
             </tbody>
         </table>
     </main>
