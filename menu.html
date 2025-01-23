@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +14,7 @@
             background-color: #004080;
             color: white;
             padding: 10px 20px;
+            text-align: center;
         }
         nav {
             display: flex;
@@ -103,93 +104,51 @@
                     <li><a href="#">3</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#">Nuevo 2</a>
-                <ul>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">Nuevo 3</a>
-                <ul>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                </ul>
-            </li>
         </ul>
     </nav>
     <main>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
-                <div class="table-container">
-                    <h2>Registros Guardados</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tipo</th>
-                                <th>Fecha Asignación</th>
-                                <th>Consecutivo</th>
-                                <th>Agrupación</th>
-                                <th>Objeto</th>
-                                <th>Analista</th>
-                                <th>SICOP</th>
-                                <th>Monto</th>
-                                <th>Lotes</th>
-                                <th>Prioridad</th>
-                                <th>Observaciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="registrosTabla"></tbody>
-                    </table>
-                </div>
-                <script>
-                    document.getElementById('contratacionesForm').addEventListener('submit', function(event) {
-                        event.preventDefault();
-                        const datos = new FormData(event.target);
-                        const contratacion = {};
-                        datos.forEach((value, key) => contratacion[key] = value);
-            
-                        const listaContrataciones = JSON.parse(localStorage.getItem('contrataciones')) || [];
-                        listaContrataciones.push(contratacion);
-                        localStorage.setItem('contrataciones', JSON.stringify(listaContrataciones));
-            
-                        alert('Datos guardados con éxito');
-                        event.target.reset();
-                        cargarRegistros();
-                    });
-            
-                    function cargarRegistros() {
-                        const registros = JSON.parse(localStorage.getItem('contrataciones')) || [];
-                        const tabla = document.getElementById('registrosTabla');
-                        tabla.innerHTML = '';
-                        registros.forEach(contratacion => {
-                            const fila = document.createElement('tr');
-                            for (let key in contratacion) {
-                                const celda = document.createElement('td');
-                                celda.textContent = contratacion[key];
-                                fila.appendChild(celda);
-                            }
-                            tabla.appendChild(fila);
-                        });
-                    }
-            
-                    // Cargar registros al inicio
-                    document.addEventListener('DOMContentLoaded', cargarRegistros);
-                </script>
-            
-            </tbody>
-        </table>
+        <div class="table-container">
+            <h2>Registros Guardados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Fecha Asignación</th>
+                        <th>Consecutivo</th>
+                        <th>Agrupación</th>
+                        <th>Objeto</th>
+                        <th>Analista</th>
+                        <th>SICOP</th>
+                        <th>Monto</th>
+                        <th>Lotes</th>
+                        <th>Prioridad</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody id="registrosTabla"></tbody>
+            </table>
+        </div>
     </main>
+    <script>
+        // Cargar registros desde localStorage y mostrarlos en la tabla
+        function cargarRegistros() {
+            const registros = JSON.parse(localStorage.getItem('contrataciones')) || [];
+            const tabla = document.getElementById('registrosTabla');
+            tabla.innerHTML = ''; // Limpiar tabla antes de agregar registros nuevos
+
+            registros.forEach((contratacion, index) => {
+                const fila = document.createElement('tr');
+                for (let key in contratacion) {
+                    const celda = document.createElement('td');
+                    celda.textContent = contratacion[key];
+                    fila.appendChild(celda);
+                }
+                tabla.appendChild(fila);
+            });
+        }
+
+        // Ejecutar cuando la página cargue
+        document.addEventListener('DOMContentLoaded', cargarRegistros);
+    </script>
 </body>
 </html>
