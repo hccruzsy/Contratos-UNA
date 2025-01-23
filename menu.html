@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrataciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .form-container, .table-container {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        input, select, textarea, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Formulario de Contrataciones</h1>
+    </header>
+    <div class="form-container">
+        <form id="contratacionesForm">
+            <div>
+                <label for="tipo">Tipo Contratación:</label>
+                <input type="text" id="tipo" name="tipo" required>
+            </div>
+            <div>
+                <label for="fechaAsignacion">Fecha Asignación:</label>
+                <input type="date" id="fechaAsignacion" name="fechaAsignacion" required>
+            </div>
+            <div>
+                <label for="consecutivo">Consecutivo CNT:</label>
+                <input type="text" id="consecutivo" name="consecutivo" required>
+            </div>
+            <div>
+                <label for="agrupacion">Número de Agrupación:</label>
+                <input type="text" id="agrupacion" name="agrupacion" required>
+            </div>
+            <div>
+                <label for="objeto">Objeto del Contrato:</label>
+                <textarea id="objeto" name="objeto" rows="3" required></textarea>
+            </div>
+            <div>
+                <label for="analista">Analista:</label>
+                <input type="text" id="analista" name="analista" required>
+            </div>
+            <div>
+                <label for="sicop">Número Solicitud SICOP:</label>
+                <input type="text" id="sicop" name="sicop" required>
+            </div>
+            <div>
+                <label for="monto">Monto:</label>
+                <input type="number" id="monto" name="monto" step="0.01" required>
+            </div>
+            <div>
+                <label for="lotes">Cantidad de Lotes:</label>
+                <input type="number" id="lotes" name="lotes" required>
+            </div>
+            <div>
+                <label for="prioridad">Nivel de Prioridad:</label>
+                <select id="prioridad" name="prioridad" required>
+                    <option value="Alta">Alta</option>
+                    <option value="Media">Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+            </div>
+            <div>
+                <label for="observaciones">Observaciones:</label>
+                <textarea id="observaciones" name="observaciones" rows="3"></textarea>
+            </div>
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <h2>Registros Guardados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Fecha Asignación</th>
+                    <th>Consecutivo</th>
+                    <th>Agrupación</th>
+                    <th>Objeto</th>
+                    <th>Analista</th>
+                    <th>SICOP</th>
+                    <th>Monto</th>
+                    <th>Lotes</th>
+                    <th>Prioridad</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody id="registrosTabla"></tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById('contratacionesForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const datos = new FormData(event.target);
+            const contratacion = {};
+            datos.forEach((value, key) => contratacion[key] = value);
+
+            const listaContrataciones = JSON.parse(localStorage.getItem('contrataciones')) || [];
+            listaContrataciones.push(contratacion);
+            localStorage.setItem('contrataciones', JSON.stringify(listaContrataciones));
+
+            alert('Datos guardados con éxito');
+            event.target.reset();
+            cargarRegistros();
+        });
+
+        function cargarRegistros() {
+            const registros = JSON.parse(localStorage.getItem('contrataciones')) || [];
+            const tabla = document.getElementById('registrosTabla');
+            tabla.innerHTML = '';
+            registros.forEach(contratacion => {
+                const fila = document.createElement('tr');
+                for (let key in contratacion) {
+                    const celda = document.createElement('td');
+                    celda.textContent = contratacion[key];
+                    fila.appendChild(celda);
+                }
+                tabla.appendChild(fila);
+            });
+        }
+
+        // Cargar registros al inicio
+        document.addEventListener('DOMContentLoaded', cargarRegistros);
+    </script>
+</body>
+</html>
